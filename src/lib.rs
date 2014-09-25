@@ -1,5 +1,12 @@
+#![crate_name = "unitr"]
+#![crate_type="lib"]
 #![feature(macro_rules)]
 
+//! A library that implements basic units and unit conversions.
+//!
+//!
+
+#[stable]
 trait Distance<T> {
   fn mm(&self)  -> Millimeter <T>;
   fn cm(&self)  -> Centimeter <T>;
@@ -13,7 +20,7 @@ macro_rules! gen_unit_struct(
   ($($T:ident),+) => (
     $(
       #[deriving(Show, PartialEq, PartialOrd)]
-      struct $T<T>(T);
+      pub struct $T<T>(T);
     )+
   )
 )
