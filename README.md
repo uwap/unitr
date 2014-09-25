@@ -23,6 +23,7 @@ There are several distance types implemented. Take a look at this list:
 * Decimeter<T>(T)
 * Centimeter<T>(T)
 * Millimeter<T>(T)
+
 As you can see, those units are simple unit structs using generics.  
 So, instead of `f64` you could also use `f32` or `i32` or even `u64`.  
 Note, that we are not supporting anything below 32 bits, because it may  
