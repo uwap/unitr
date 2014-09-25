@@ -6,25 +6,33 @@
 //!
 //!
 
-trait HasValue<T> {
+#[stable]
+pub trait HasValue<T> {
   fn val(&self) -> T;
 }
 
 #[stable]
-trait Distance<T> : HasValue<T> {
+pub trait Distance<T> : HasValue<T> {
   fn mm(&self)  -> Millimeter <T>;
   fn cm(&self)  -> Centimeter <T>;
   fn dm(&self)  -> Decimeter  <T>;
-  fn m(&self)   -> Meter      <T>;
+  fn m (&self)  -> Meter      <T>;
   fn km(&self)  -> Kilometer  <T>;
 }
 
 #[stable]
-trait Time<T> : HasValue<T> {
-  fn ms(&self)  -> Millisecond <T>;
-  fn s(&self)   -> Second     <T>;
-  fn min(&self) -> Minute     <T>;
-  fn h(&self)   -> Hour       <T>;
+pub trait Time<T> : HasValue<T> {
+  fn ms (&self)   -> Millisecond  <T>;
+  fn s  (&self)   -> Second       <T>;
+  fn min(&self)   -> Minute       <T>;
+  fn h  (&self)   -> Hour         <T>;
+}
+
+pub trait Velocity<T> : HasValue<T> {
+  fn mm_ms  (&self) -> MillimetersPerMillsecond <T>;
+  fn mm_s   (&self) -> MillimetersPerSecond     <T>;
+  fn mm_min (&self) -> MillimetersPerMinute     <T>;
+  fn mm_h   (&self) -> MillimetersPerHour       <T>;
 }
 
 macro_rules! gen_unit_struct(
@@ -225,6 +233,7 @@ macro_rules! impl_time_for_primitives(
 
 gen_unit_struct!(Millimeter, Centimeter, Decimeter, Meter, Kilometer)
 gen_unit_struct!(Hour, Minute, Second, Millisecond)
+gen_unit_struct!(MillimetersPerMillsecond, MillimetersPerSecond, MillimetersPerMinute, MillimetersPerHour)
 
 // we are not going to implement units < 32 bit, because of possible conversion failures e.g. 1u8.km().mm() == 256u8
 impl_primitives!(i32, i64)
