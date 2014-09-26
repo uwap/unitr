@@ -1,5 +1,20 @@
 UNITr
 =====
+1. [Getting Started](#getting-started)
+2. [A Qick Overview](#a-quick-overview)
+3. [Distance Types](#distance-types)
+4. [Time Types](#time-types)
+5. [Velocity Types](#velocity-types)
+Getting Started
+===============
+To start using this library, simply add the following 2 lines to your Cargo.toml:
+```
+[dependencies.unitr]
+git = "https://github.com/uwap/unitr.git"
+```
+And add `extern crate unitr;` in your main.rs / lib.rs.
+A Quick Overview
+================
 UNITr is a library for rust designed for people having to use units a lot.  
 Here is a great example of the power of this library:  
 ```
@@ -32,14 +47,6 @@ When adding to units together the result will be of the same type as the left ha
 Though we allow adding and subtracting, multiplying and dividing is often not allowed.  
 The reason is simple. What unit will you get when dividing meters by meters?  
 Well, right. None.
-Getting Started
-===============
-To start using this library, simply add the following 2 lines to your Cargo.toml:
-```
-[dependencies.unitr]
-git = "https://github.com/uwap/unitr.git"
-```
-And add `extern crate unitr;` in your main.rs / lib.rs.
 Distance Types
 ==============
 There are several distance types implemented. Take a look at this list:
