@@ -9,10 +9,12 @@
 pub use self::distances::*;
 pub use self::times::*;
 pub use self::meta::HasValue;
+pub use self::velocities::*;
 
 pub mod meta;
 pub mod distances;
 pub mod times;
+pub mod velocities;
 
 /*pub trait Velocity<T> : HasValue<T> {
   fn mm_ms  (&self) -> MillimetersPerMillsecond <T>;
@@ -37,4 +39,9 @@ fn test_time() {
   assert_eq!(1u32.h().min(), 60u32.min())
   assert_eq!(1000u32.ms(), 1u32.s().ms())
   assert_eq!(1000f64.ms().h().val(), 1f64.s().min().h().val())
+}
+
+#[test]
+fn test_velocity() {
+  //assert_eq!(Velocity::from_distance_and_time(100f64.mm(), 2f64.s()).val(), 50f64.mm_s().val())
 }

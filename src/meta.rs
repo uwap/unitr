@@ -17,20 +17,11 @@ macro_rules! impl_has_value_for_primitives(
   )
 )
 
-macro_rules! gen_unit_structs(
-  ($($T:ident),+) => (
-    $(
-      #[deriving(Show, PartialEq, PartialOrd)]
-      pub struct $T<T>(T);
-    )+
-  )
-)
-
-macro_rules! gen_unit_structs_with_args(
-  ($r:ident, $($T:ident $fac:expr),+) => (
+macro_rules! gen_unit_structs_with_args_derive(
+  ($r:ident, $($T:ident > $t:ident $fac:expr),+) => (
     gen_unit_structs!($($T),+)
     $(
-      for_types!($r $T $fac)
+      for_types!($r $T of $t $fac)
     )+
   )
 )
@@ -38,18 +29,6 @@ macro_rules! gen_unit_structs_with_args(
 macro_rules! for_types(
   ($r:ident) => (
     $r!(f64, f32, i64, i32, u64, u32, int, uint)
-  );
-  ($r:ident $T:ident $fac:expr) => (
-    for_types_expand!($r $T $fac
-      f64, f32, i64, i32, u64, u32, int, uint
-      )
-  )
-)
-macro_rules! for_types_expand(
-  ($r:ident $T:ident $fac:expr $($t:ty),+) => (
-    $(
-      $r!($T $t $fac as $t)
-    )+
   )
 )
 

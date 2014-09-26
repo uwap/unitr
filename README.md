@@ -32,7 +32,7 @@ There are several distance types implemented. Take a look at this list:
 * `Centimeter<T>(T)` is accessible by `.cm()`
 * `Millimeter<T>(T)` is accessible by `.mm()`
 
-As you can see, those units are simple unit structs using generics.  
+As you can see, those units are simple tupel structs using generics.  
 So, instead of `f64` you could also use `f32` or `i32` or even `u64`.  
 Note, that we are not supporting anything below 32 bits, because it may  
 cause some trouble when converting units. `1u8.mm().km().val()` is probably just 256.
