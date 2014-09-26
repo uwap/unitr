@@ -16,9 +16,21 @@ pub enum Times<T> {
   Hour(T)
 }
 
+macro_rules! time_overload_operator(
+  ($op:ident, $_self:ident, $other:ident) => (
+    match *$_self {
+      Millisecond(_) => Millisecond($_self.val().$op(&$other.ms().val())),
+      Second(_) => Millisecond($_self.ms().val().$op(&$other.ms().val())).s(),
+      Minute(_) => Millisecond($_self.ms().val().$op(&$other.ms().val())).min(),
+      Hour(_) => Millisecond($_self.ms().val().$op(&$other.ms().val())).h(),
+    }
+  )
+)
+
 macro_rules! impl_time_for_primitives(
   ($($t:ty),+) => (
     $(
+      // impl primitive
       impl Time<$t> for $t {
         fn ms(&self) -> Times<$t> {
           Millisecond(*self)
@@ -33,6 +45,7 @@ macro_rules! impl_time_for_primitives(
           Hour(*self)
         }
       }
+      // impl enum
       impl Time<$t> for Times<$t> {
         fn ms(&self) -> Times<$t> {
           Millisecond(match *self {
@@ -60,6 +73,17 @@ macro_rules! impl_time_for_primitives(
             Minute(v) => v,
             Hour(v) => v,
           }
+        }
+      }
+      // operator overloading
+      impl Add<Times<$t>, Times<$t>> for Times<$t> {
+        fn add(&self, other: &Times<$t>) -> Times<$t> {
+          time_overload_operator!(add, self, other)
+        }
+      }
+      impl Sub<Times<$t>, Times<$t>> for Times<$t> {
+        fn sub(&self, other: &Times<$t>) -> Times<$t> {
+          time_overload_operator!(sub, self, other)
         }
       }
     )+

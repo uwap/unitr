@@ -32,6 +32,10 @@ fn test_distance() {
   assert_eq!(1u32.m().km().val(), 100u32.cm().km().val())
   assert_eq!(1u32.km().mm().cm().m(), 1000u32.m().mm().km().dm().m())
   assert!(1u32.km() != 2u32.km())
+  assert_eq!(1f64.km().mm().km().val(), 1f64)
+  assert_eq!(100f64.m() + 5f64.m(), 105f64.m())
+  assert_eq!(1f64.km() + 100f64.m(), 1.1f64.km())
+  assert_eq!(1f64.km() - 100f64.m(), 0.9f64.km())
 }
 
 #[test]
@@ -39,6 +43,7 @@ fn test_time() {
   assert_eq!(1u32.h().min(), 60u32.min())
   assert_eq!(1000u32.ms(), 1u32.s().ms())
   assert_eq!(1000f64.ms().h().val(), 1f64.s().min().h().val())
+  assert_eq!(1f32.s() + 100f32.ms(), 1.1f32.s())
 }
 
 #[test]

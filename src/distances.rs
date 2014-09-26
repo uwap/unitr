@@ -18,9 +18,22 @@ pub enum Distances<T> {
   Millimeter(T)
 }
 
+macro_rules! distance_overload_operator(
+  ($op:ident, $_self:ident, $other:ident) => (
+    match *$_self {
+      Millimeter(_) => Millimeter($_self.val().$op(&$other.mm().val())),
+      Centimeter(_) => Millimeter($_self.mm().val().$op(&$other.mm().val())).cm(),
+      Decimeter(_) => Millimeter($_self.mm().val().$op(&$other.mm().val())).dm(),
+      Meter(_) => Millimeter($_self.mm().val().$op(&$other.mm().val())).m(),
+      Kilometer(_) => Millimeter($_self.mm().val().$op(&$other.mm().val())).km(),
+    }
+  )
+)
+
 macro_rules! impl_distance_for_primitives(
   ($($t:ty),+) => (
     $(
+      // primitive impl
       impl Distance<$t> for $t {
         fn mm(&self) -> Distances<$t> {
           Millimeter(*self)
@@ -38,6 +51,7 @@ macro_rules! impl_distance_for_primitives(
           Kilometer(*self)
         }
       }
+      // unit impl
       impl Distance<$t> for Distances<$t> {
         fn mm(&self) -> Distances<$t> {
           match *self {
@@ -70,6 +84,17 @@ macro_rules! impl_distance_for_primitives(
             Centimeter(v) => v,
             Millimeter(v) => v
           }
+        }
+      }
+      // operator overloading
+      impl Add<Distances<$t>, Distances<$t>> for Distances<$t> {
+        fn add(&self, other: &Distances<$t>) -> Distances<$t> {
+          distance_overload_operator!(add, self, other)
+        }
+      }
+      impl Sub<Distances<$t>, Distances<$t>> for Distances<$t> {
+        fn sub(&self, other: &Distances<$t>) -> Distances<$t> {
+          distance_overload_operator!(sub, self, other)
         }
       }
     )+
