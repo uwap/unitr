@@ -49,7 +49,7 @@ As well as distances, UNITr also supports time.
 Pretty straight forward, isn't it?
 Velocity Types
 ==============
-__These are just plans! None of them is implemented yet!__
+__These are just plans! None of them is implemented yet!__  
 With velocities, UNITr shows its full potential.  
 ```
 let distance  = 10f32.m();
