@@ -3,7 +3,7 @@ UNITr
 UNITr is a library for rust designed for people having to use units a lot.  
 Here is a great example of the power of this library:  
 ```
-let distance_walked = 32f64.km();  
+let distance_walked = 32f64.km();
 println!("You walked {} meters!", distance_walked.m.val())
 ```
 As you can see the `.km()` denotes that the specific value is measured in kilometers.  
@@ -55,7 +55,7 @@ With velocities, UNITr shows its full potential.
 let distance  = 10f32.m();
 let time      = 5f32.s();
 let velocity  = distance / time;
-print!("Your speed was {} km/h!", velocity.km_h().val())
+println!("Your speed was {} km/h!", velocity.km_h().val())
 ```
 Dividing distance by time will in fact give you velocities.  
 There are many, many, many velocity types.  
