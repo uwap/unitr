@@ -2,6 +2,8 @@ use meta::HasValue;
 use times::*;
 use distances::*;
 
+// TODO: Implement add, sub and mul traits
+
 #[deriving(Show, Clone)]
 pub struct Velocity<T>(Distances<T>, Times<T>);
 

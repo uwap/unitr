@@ -75,7 +75,6 @@ __Note: Because of the ambiguity between `fn min<T: Ord>(T)` and `.min()` the mi
 Though, the _velocity is still `.{distance}_min()`_ (See [Velocity Types](#velocity-types))
 Velocity Types
 ==============
-__These are just plans! None of them is implemented yet!__  
 With velocities, UNITr shows its full potential.  
 ```
 let distance  = 10f32.m();
@@ -94,3 +93,9 @@ These are made of a distance and a time unit. For example:
 You can make up any combination you want.  
 The conversation is done in the pattern of `.{distance}_{time}()`, `.m_s()` for example.
 __Note: Instead of using `.minute()` as for the times, velocities use `.min()`__
+TODO
+====
+Beside the previous named features we have a lot of things on our todo list.  
+* Acceleration
+* Temperature
+* Non-metric units
