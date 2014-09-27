@@ -8,7 +8,7 @@ pub trait Time<T> : HasValue<T> {
   fn h  (&self)   -> Times<T>;
 }
 
-#[deriving(Show, PartialEq, PartialOrd)]
+#[deriving(Show, PartialEq, PartialOrd, Clone)]
 pub enum Times<T> {
   Millisecond(T),
   Second(T),

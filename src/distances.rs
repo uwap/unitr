@@ -9,7 +9,7 @@ pub trait Distance<T> : HasValue<T> {
   fn km(&self)  -> Distances<T>;
 }
 
-#[deriving(Show, PartialEq, PartialOrd)]
+#[deriving(Show, PartialEq, PartialOrd, Clone)]
 pub enum Distances<T> {
   Kilometer(T),
   Meter(T),
@@ -97,6 +97,11 @@ macro_rules! impl_distance_for_primitives(
           distance_overload_operator!(sub, self, other)
         }
       }
+      /*impl Div<Times<$t>, Velocity<$t>> for Distances<$t> {
+        fn div(&self, other: &Times<$t>) -> Velocity<$t> {
+          Velocity((*self).clone(), (*other).clone())
+        }
+      }*/
     )+
   )
 )

@@ -16,13 +16,6 @@ pub mod distances;
 pub mod times;
 pub mod velocities;
 
-/*pub trait Velocity<T> : HasValue<T> {
-  fn mm_ms  (&self) -> MillimetersPerMillsecond <T>;
-  fn mm_s   (&self) -> MillimetersPerSecond     <T>;
-  fn mm_min (&self) -> MillimetersPerMinute     <T>;
-  fn mm_h   (&self) -> MillimetersPerHour       <T>;
-}*/
-
 #[test]
 fn test_distance() {
   assert_eq!(1000u32.m().val(), 1000u32)
@@ -48,5 +41,6 @@ fn test_time() {
 
 #[test]
 fn test_velocity() {
+  assert_eq!((10f64.m() / 2f64.s()).val(), 5f64)
   //assert_eq!(Velocity::from_distance_and_time(100f64.mm(), 2f64.s()).val(), 50f64.mm_s().val())
 }

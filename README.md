@@ -6,7 +6,6 @@ UNITr
 4. [Time Types](#time-types)
 5. [Velocity Types](#velocity-types)
 
-
 Getting Started
 ===============
 To start using this library, simply add the following 2 lines to your Cargo.toml:
@@ -45,8 +44,8 @@ let my_centimeters = 100f32.cm();
 let my_meters = 0.4f32.m();
 my_centimeters + my_meters // what is the result? Well, it is 500cm.
 ```
-When adding to units together the result will be of the same type as the left hand side expression.  
-Though we allow adding and subtracting, multiplying and dividing is often not allowed.  
+When adding two units together the result will be of the same type as the left hand side expression.  
+Though we allow adding and subtracting, multiplying and dividing is mostly forbidden.  
 The reason is simple. What unit will you get when dividing meters by meters?  
 Well, right. None.
 Distance Types
