@@ -73,7 +73,6 @@ As well as distances, UNITr also supports time.
 
 __Note: Because of the ambiguity between `fn min<T: Ord>(T)` and `.min()` the minutes are written `.minute()` instead of `.min()`__  
 Though, the _velocity is still `.{distance}_min()`_ (See [Velocity Types](#velocity-types))
-Pretty straight forward, isn't it?
 Velocity Types
 ==============
 __These are just plans! None of them is implemented yet!__  
