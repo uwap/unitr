@@ -4,7 +4,7 @@ use meta::HasValue;
 pub trait Time<T> : HasValue<T> {
   fn ms (&self)   -> Times<T>;
   fn s  (&self)   -> Times<T>;
-  fn min(&self)   -> Times<T>;
+  fn minute(&self)   -> Times<T>;
   fn h  (&self)   -> Times<T>;
 }
 
@@ -21,7 +21,7 @@ macro_rules! time_overload_operator(
     match *$_self {
       Millisecond(_) => Millisecond($_self.val().$op(&$other.ms().val())),
       Second(_) => Millisecond($_self.ms().val().$op(&$other.ms().val())).s(),
-      Minute(_) => Millisecond($_self.ms().val().$op(&$other.ms().val())).min(),
+      Minute(_) => Millisecond($_self.ms().val().$op(&$other.ms().val())).minute(),
       Hour(_) => Millisecond($_self.ms().val().$op(&$other.ms().val())).h(),
     }
   )
@@ -38,7 +38,7 @@ macro_rules! impl_time_for_primitives(
         fn s(&self) -> Times<$t> {
           Second(*self)
         }
-        fn min(&self) -> Times<$t> {
+        fn minute(&self) -> Times<$t> {
           Minute(*self)
         }
         fn h(&self) -> Times<$t> {
@@ -58,7 +58,7 @@ macro_rules! impl_time_for_primitives(
         fn s(&self) -> Times<$t> {
           Second((self.ms().val() as f64 / 1000f64) as $t)
         }
-        fn min(&self) -> Times<$t> {
+        fn minute(&self) -> Times<$t> {
           Minute((self.ms().val() as f64 / 60000f64) as $t)
         }
         fn h(&self) -> Times<$t> {

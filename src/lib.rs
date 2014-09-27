@@ -33,14 +33,14 @@ fn test_distance() {
 
 #[test]
 fn test_time() {
-  assert_eq!(1u32.h().min(), 60u32.min())
+  assert_eq!(1u32.h().minute(), 60u32.minute())
   assert_eq!(1000u32.ms(), 1u32.s().ms())
-  assert_eq!(1000f64.ms().h().val(), 1f64.s().min().h().val())
+  assert_eq!(1000f64.ms().h().val(), 1f64.s().minute().h().val())
   assert_eq!(1f32.s() + 100f32.ms(), 1.1f32.s())
 }
 
 #[test]
 fn test_velocity() {
   assert_eq!((10f64.m() / 2f64.s()).val(), 5f64)
-  //assert_eq!(Velocity::from_distance_and_time(100f64.mm(), 2f64.s()).val(), 50f64.mm_s().val())
+  assert_eq!(100f64.m() / 2f64.s(), 50f64.km_s())
 }

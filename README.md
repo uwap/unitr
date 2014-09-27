@@ -67,10 +67,12 @@ Time Types
 ==========
 As well as distances, UNITr also supports time.
 * `Hour(T)` is accessible by `.h()`
-* `Minute(T)` is accessible by `.min()`
+* `Minute(T)` is accessible by `.minute()`
 * `Second(T)` is accessible by `.s()`
 * `Millisecond(T)` is accessible by `.ms()`
 
+__Note: Because of the ambiguity between `fn min<T: Ord>(T)` and `.min()` the minutes are written `.minute()` instead of `.min()`__  
+Though, the _velocity is still `.{distance}_min()`_ (See [Velocity Types](#velocity-types))
 Pretty straight forward, isn't it?
 Velocity Types
 ==============
@@ -83,13 +85,13 @@ let velocity  = distance / time;
 println!("Your speed was {} km/h!", velocity.km_h().val())
 ```
 Dividing distance by time will in fact give you velocities.  
-There are many, many, many velocity types.  
-Each of them is called `{distance}sPer{time}`, where {distance} is one of the distance  
-types and {time} is one of the time types. For example those are possible types:  
-* `MetersPerSecond(T)` is accessible by `.m_s()`
-* `KilometersPerHour(T)` is accessible by `.km_h()`
-* `MillimetersPerMillisecond(T)` is accessible by `.mm_ms()`
-* `CentimetersPerMinute(T)` is accessible by `.cm_min()`
+There are many, many, many velocity units.  
+These are made of a distance and a time unit. For example:  
+* `Velocity(Meter, Second)` is accessible by `.m_s()`
+* `Velocity(Kilometer, Hour)` is accessible by `.km_h()`
+* `Velocity(Millimeter, Millisecond)` is accessible by `.mm_ms()`
+* `Velocity(Centimeter, Minute)` is accessible by `.cm_min()`
 
 You can make up any combination you want.  
 The conversation is done in the pattern of `.{distance}_{time}()`, `.m_s()` for example.
+__Note: Instead of using `.minute()` as for the times, velocities use `.min()`__
