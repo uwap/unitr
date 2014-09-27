@@ -2,7 +2,7 @@ use meta::HasValue;
 use times::*;
 use distances::*;
 
-#[deriving(Show, PartialEq, PartialOrd, Clone)]
+#[deriving(Show, Clone)]
 pub struct Velocity<T>(Distances<T>, Times<T>);
 
 macro_rules! for_velocities(
@@ -65,14 +65,55 @@ macro_rules! add_distance_division(
   )
 )
 
-macro_rules! impl_velocity_hasvalue(
+macro_rules! impl_velocity_trait_for_velocity_part(
+  ($t:ty, $({$m:ident, $l:ident, $r:ident}),+) => (
+    $(
+      fn $m(&self) -> Velocity<$t> {
+        match *self {
+          Velocity(d, t) => Velocity(d.$l(), t.$r())
+        }
+      }
+    )+
+  )
+)
+
+macro_rules! impl_velocity_trait_for_velocity(
   ($($t:ty),+) => (
     $(
+      impl VelocityTrait<$t> for Velocity<$t> {
+        for_velocities!(impl_velocity_trait_for_velocity_part, $t)
+      }
       impl HasValue<$t> for Velocity<$t> {
         fn val(&self) -> $t {
           match *self {
             Velocity(d, t) => d.val() / t.val()
           }
+        }
+      }
+      impl PartialEq for Velocity<$t> {
+        fn eq(&self, other: &Velocity<$t>) -> bool {
+          self.val() == other.val()
+        }
+        fn ne(&self, other: &Velocity<$t>) -> bool {
+          self.val() != other.val()
+        }
+      }
+      impl PartialOrd for Velocity<$t> {
+        fn partial_cmp(&self, other: &Velocity<$t>) -> Option<Ordering> {
+          (&self.val()).partial_cmp(&other.val())
+        }
+
+        fn lt(&self, other: &Velocity<$t>) -> bool {
+          self.val() < other.val()
+        }
+        fn le(&self, other: &Velocity<$t>) -> bool {
+          self.val() <= other.val()
+        }
+        fn gt(&self, other: &Velocity<$t>) -> bool {
+          self.val() > other.val()
+        }
+        fn ge(&self, other: &Velocity<$t>) -> bool {
+          self.val() >= other.val()
         }
       }
     )+
@@ -81,5 +122,5 @@ macro_rules! impl_velocity_hasvalue(
 
 for_velocities!(generate_velocity_trait)
 for_types!(impl_trait_for_primitives)
-for_types!(impl_velocity_hasvalue)
+for_types!(impl_velocity_trait_for_velocity)
 for_types!(add_distance_division)

@@ -42,5 +42,8 @@ fn test_time() {
 #[test]
 fn test_velocity() {
   assert_eq!((10f64.m() / 2f64.s()).val(), 5f64)
-  assert_eq!(100f64.m() / 2f64.s(), 50f64.km_s())
+  assert_eq!((100f64.km()) / 100f64.s(), 1f64.km_s())
+  assert_eq!((100f64.m() / 1f64.s()), (0.1f64.km() / 1f64.s()).m_s())
+  assert_eq!(100f64.m() / 2f64.s(), 50f64.m_s())
+  assert!(100f64.m() / 1f64.s() != 50f64.m() / 1f64.s())
 }
