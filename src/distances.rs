@@ -62,6 +62,12 @@ impl <T> DistanceStruct<T> where T: Primitive {
         self_val_f64 * Distances::fac(self._ty, to)).unwrap())
   }
 }
+impl <T> HasValue<T> for DistanceStruct<T> {
+  #[inline]
+  fn val(self) -> T {
+    self._val
+  }
+}
 
 macro_rules! impl_distance_for_primitives(($($T:ty),+) => ($(
 impl Distance<$T> for $T {
@@ -121,12 +127,6 @@ impl ToPrimitive for DistanceStruct<$T> {
   }
 }
 
-impl HasValue<$T> for DistanceStruct<$T> {
-  #[inline]
-  fn val(self) -> $T {
-    self._val
-  }
-}
 impl Unit for DistanceStruct<$T> {
   #[inline]
   fn symbol(&self) -> &str {
@@ -137,7 +137,7 @@ impl Unit for DistanceStruct<$T> {
 // Implement number traits
 impl Zero for DistanceStruct<$T> {
   fn zero() -> DistanceStruct<$T> {
-    DistanceStruct::new(Millimeter, Zero::zero())
+    DistanceStruct::new(Meter, Zero::zero())
   }
   fn is_zero(&self) -> bool {
     self.val().is_zero()
