@@ -1,8 +1,10 @@
-use meta::HasValue;
-use std::mem;
+use meta::{HasValue, Unit};
+use std::{fmt, mem};
+use std::fmt::Show;
+use std::num::{Zero};
 
 #[unstable="Likely to change its name"]
-pub trait Distance<T> : HasValue<T> {
+pub trait Distance<T> : HasValue<T> + Unit {
   fn mm(self)  -> DistanceStruct<T>;
   fn cm(self)  -> DistanceStruct<T>;
   fn dm(self)  -> DistanceStruct<T>;
@@ -24,9 +26,20 @@ impl <T> HasValue<T> for Distances where T: Primitive {
     NumCast::from::<i32>(unsafe { mem::transmute(self) }).unwrap()
   }
 }
+impl Unit for Distances {
+  fn symbol(&self) -> &str {
+    match *self {
+      Millimeter => "mm",
+      Centimeter => "cm",
+      Decimeter  => "dm",
+      Meter      => "m",
+      Kilometer  => "km"
+    }
+  }
+}
 impl Distances {
   #[inline]
-  fn fac<T>(from: T, to: T) -> f32 where T: HasValue<f32> {
+  fn fac<T>(from: T, to: T) -> f64 where T: HasValue<f64> {
     from.val() / to.val()
   }
 }
@@ -43,10 +56,10 @@ impl <T> DistanceStruct<T> where T: Primitive {
     DistanceStruct{_ty: kind, _val: val}
   }
   fn convert<U>(self, to: Distances) -> DistanceStruct<U> where U: Primitive {
-    let self_val_f32 : f32 = NumCast::from(self._val).unwrap();
+    let self_val_f64 : f64 = NumCast::from(self._val).unwrap();
     DistanceStruct::new(to,
-      NumCast::from::<f32>(
-        self_val_f32 * Distances::fac(self._ty, to)).unwrap())
+      NumCast::from::<f64>(
+        self_val_f64 * Distances::fac(self._ty, to)).unwrap())
   }
 }
 
@@ -114,97 +127,48 @@ impl HasValue<$T> for DistanceStruct<$T> {
     self._val
   }
 }
+impl Unit for DistanceStruct<$T> {
+  #[inline]
+  fn symbol(&self) -> &str {
+    self._ty.symbol()
+  }
+}
+
+// Implement number traits
+impl Zero for DistanceStruct<$T> {
+  fn zero() -> DistanceStruct<$T> {
+    DistanceStruct::new(Millimeter, Zero::zero())
+  }
+  fn is_zero(&self) -> bool {
+    self.val().is_zero()
+  }
+}
+impl Add<DistanceStruct<$T>, DistanceStruct<$T>> for DistanceStruct<$T> {
+  fn add(&self, rhs: &DistanceStruct<$T>) -> DistanceStruct<$T> {
+    DistanceStruct::new(self._ty, self.val() + rhs.convert::<$T>(self._ty).val())
+  }
+}
+impl Sub<DistanceStruct<$T>, DistanceStruct<$T>> for DistanceStruct<$T> {
+  fn sub(&self, rhs: &DistanceStruct<$T>) -> DistanceStruct<$T> {
+    DistanceStruct::new(self._ty, self.val() - rhs.convert::<$T>(self._ty).val())
+  }
+}
+//impl Mul<DistanceStruct<$T>, Surface<$T>>
+
+impl Show for DistanceStruct<$T> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}{}", self.val(), self.symbol())
+    }
+}
+impl PartialEq for DistanceStruct<$T> {
+  fn eq(&self, other: &DistanceStruct<$T>) -> bool {
+    self.val() == other.convert::<$T>(self._ty).val()
+  }
+}
+impl PartialOrd for DistanceStruct<$T> {
+  fn partial_cmp(&self, other: &DistanceStruct<$T>) -> Option<Ordering> {
+    self.val().partial_cmp(&other.convert::<$T>(self._ty).val())
+  }
+}
 
 )+)) for_primitives!(impl_distance_for_primitives)
-
-/*
-macro_rules! distance_overload_operator(
-  ($op:ident, $_self:ident, $other:ident) => (
-    match *$_self {
-      Millimeter(_) => Millimeter($_self.val().$op(&$other.mm().val())),
-      Centimeter(_) => Millimeter($_self.mm().val().$op(&$other.mm().val())).cm(),
-      Decimeter(_) => Millimeter($_self.mm().val().$op(&$other.mm().val())).dm(),
-      Meter(_) => Millimeter($_self.mm().val().$op(&$other.mm().val())).m(),
-      Kilometer(_) => Millimeter($_self.mm().val().$op(&$other.mm().val())).km(),
-    }
-  )
-)
-
-macro_rules! impl_distance_for_primitives(
-  ($($t:ty),+) => (
-    $(
-      // primitive impl
-      impl Distance<$t> for $t {
-        fn mm(&self) -> Distances<$t> {
-          Millimeter(*self)
-        }
-        fn cm(&self) -> Distances<$t> {
-          Centimeter(*self)
-        }
-        fn dm(&self) -> Distances<$t> {
-          Decimeter(*self)
-        }
-        fn m(&self) -> Distances<$t> {
-          Meter(*self)
-        }
-        fn km(&self) -> Distances<$t> {
-          Kilometer(*self)
-        }
-      }
-      // unit impl
-      impl Distance<$t> for Distances<$t> {
-        fn mm(&self) -> Distances<$t> {
-          match *self {
-            Kilometer(v) => Millimeter((100000000f64 * v as f64) as $t),
-            Meter(v) => Millimeter((100000f64 * v as f64) as $t),
-            Decimeter(v) => Millimeter((10000f64 * v as f64) as $t),
-            Centimeter(v) => Millimeter((1000f64 * v as f64) as $t),
-            Millimeter(v) => Millimeter((1f64 * v as f64) as $t)
-          }
-        }
-        fn cm(&self) -> Distances<$t> {
-          Centimeter((self.mm().val() as f64 / 1000f64) as $t)
-        }
-        fn dm(&self) -> Distances<$t> {
-          Decimeter((self.mm().val() as f64 / 10000f64) as $t)
-        }
-        fn m(&self) -> Distances<$t> {
-          Meter((self.mm().val() as f64 / 100000f64) as $t)
-        }
-        fn km(&self) -> Distances<$t> {
-          Kilometer((self.mm().val() as f64 / 100000000f64) as $t)
-        }
-      }
-      impl HasValue<$t> for Distances<$t> {
-        fn val(&self) -> $t {
-          match *self {
-            Kilometer(v) => v,
-            Meter(v) => v,
-            Decimeter(v) => v,
-            Centimeter(v) => v,
-            Millimeter(v) => v
-          }
-        }
-      }
-      // operator overloading
-      impl Add<Distances<$t>, Distances<$t>> for Distances<$t> {
-        fn add(&self, other: &Distances<$t>) -> Distances<$t> {
-          distance_overload_operator!(add, self, other)
-        }
-      }
-      impl Sub<Distances<$t>, Distances<$t>> for Distances<$t> {
-        fn sub(&self, other: &Distances<$t>) -> Distances<$t> {
-          distance_overload_operator!(sub, self, other)
-        }
-      }
-      /*impl Div<Times<$t>, Velocity<$t>> for Distances<$t> {
-        fn div(&self, other: &Times<$t>) -> Velocity<$t> {
-          Velocity((*self).clone(), (*other).clone())
-        }
-      }*/
-    )+
-  )
-)
-
-for_types!(impl_distance_for_primitives)
-*/
