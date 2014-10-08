@@ -109,7 +109,7 @@ As well as non metric units are still missing, also `.a()` and `.ha()` aren't a 
 let a = 1.km();
 let b = 2000.m();
 let A = a*b;
-assert_eq!(A, 9.km2())
+println!("{}", A) // will print out `4km²`
 ```
 As you can see, when multiplying two different distance units together, the result's unit  
 will be the square of the left hand side unit.
