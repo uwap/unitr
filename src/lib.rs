@@ -6,12 +6,14 @@
 //!
 //!
 
+pub use self::areas::*;
 pub use self::distances::*;
-pub use self::times::*;
 pub use self::meta::{HasValue, Unit};
+pub use self::times::*;
 pub use self::velocities::*;
 
 pub mod meta;
+pub mod areas;
 pub mod distances;
 pub mod times;
 pub mod velocities;
@@ -47,4 +49,12 @@ fn test_velocity() {
   assert_eq!((100f64.m() / 1f64.s()), (0.1f64.km() / 1f64.s()).m_s())
   assert_eq!(100f64.m() / 2f64.s(), 50f64.m_s())
   assert!(100f64.m() / 1f64.s() != 50f64.m() / 1f64.s())
+}
+
+#[test]
+fn test_areas() {
+  assert_eq!(100f32.mm2() - 10f32.mm2(), 90f32.mm2())
+  assert_eq!(10i32.m() * 10i32.m(), 100i32.m2())
+  assert_eq!(1000u16.cm() * 1u16.cm(), 10u16.dm2())
+  assert!(100u8.m2() != 100u8.cm2())
 }

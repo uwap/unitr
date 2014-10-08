@@ -2,6 +2,7 @@ use meta::{HasValue, Unit};
 use std::{fmt, mem};
 use std::fmt::Show;
 use std::num::{Zero};
+use areas::AreaStruct;
 
 #[unstable="Likely to change its name"]
 pub trait Distance<T> : HasValue<T> + Unit {
@@ -154,7 +155,15 @@ impl Sub<DistanceStruct<$T>, DistanceStruct<$T>> for DistanceStruct<$T> {
     DistanceStruct::new(self._ty, self.val() - rhs.convert::<$T>(self._ty).val())
   }
 }
-//impl Mul<DistanceStruct<$T>, Surface<$T>>
+impl Mul<DistanceStruct<$T>, AreaStruct<$T>> for DistanceStruct<$T> {
+  fn mul(&self, rhs: &DistanceStruct<$T>) -> AreaStruct<$T> {
+    let ty : i64 = NumCast::from::<i32>(self._ty.val()).unwrap();
+    AreaStruct::new(
+      unsafe { mem::transmute(ty*ty) },
+      self.val() * rhs.convert::<$T>(self._ty).val()
+    )
+  }
+}
 
 impl Show for DistanceStruct<$T> {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

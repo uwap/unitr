@@ -5,6 +5,8 @@ UNITr
 3. [Distance Types](#distance-types)
 4. [Time Types](#time-types)
 5. [Velocity Types](#velocity-types)
+6. [Area Types](#area-types)
+7. [TODO](#todo)
 
 Getting Started
 ===============
@@ -64,6 +66,7 @@ As well as distances, UNITr also supports time.
 * Minutes are accessible by `.minute()`
 * Seconds are accessible by `.s()`
 * Milliseconds are accessible by `.ms()`
+* Nanoseconds are accessible by `.ns()`
 
 __Note: Because of the ambiguity between `fn min<T: Ord>(T)` and `.min()` the minutes are written `.minute()` instead of `.min()`__  
 Though, the _velocity is still `.{distance}_min()`_ (See [Velocity Types](#velocity-types))
@@ -85,12 +88,27 @@ These are made of a distance and a time unit. For example:
 * Centimeters per Hour are accessible by `.cm_min()`
 
 You can make up any combination you want.  
-The conversation is done in the pattern of `.{distance}_{time}()`, `.m_s()` for example.
+The conversation is done in the pattern of `.{distance}_{time}()`, `.m_s()` for example.  
 __Note: Instead of using `.minute()` as for the times, velocities use `.min()`__
+Area Types
+==========
+Area types can be accessed on two ways. The usual method:
+* Square Meters are accessible by `.m2()`
+* Square Centimeters are accessible by `.cm2()`
+
+And so on...  
+Or they can be accessed by multiplying to distances together.
+```rust
+let a = 100.cm();
+let b = 80.cm();
+let A = a * b;
+assert_eq!(A, 8000.cm2())
+```
+As well as non metric units are still missing, also `.a()` and `.ha()` aren't a thing yet.  
+Multiplying to distances of different units together won't work.
 TODO
 ====
 Beside the previous named features we have a lot of things on our todo list.  
-* Surfaces
 * Acceleration
 * Temperature
 * Non-metric units
