@@ -1,23 +1,104 @@
 use meta::HasValue;
 
-#[stable]
+#[unstable="Likely to change its name"]
 pub trait Distance<T> : HasValue<T> {
-  fn mm(&self)  -> Distances<T>;
-  fn cm(&self)  -> Distances<T>;
-  fn dm(&self)  -> Distances<T>;
-  fn m (&self)  -> Distances<T>;
-  fn km(&self)  -> Distances<T>;
+  fn mm(self)  -> DistanceStruct<T>;
+  fn cm(self)  -> DistanceStruct<T>;
+  fn dm(self)  -> DistanceStruct<T>;
+  fn m (self)  -> DistanceStruct<T>;
+  fn km(self)  -> DistanceStruct<T>;
 }
 
-#[deriving(Show, PartialEq, PartialOrd, Clone)]
-pub enum Distances<T> {
-  Kilometer(T),
-  Meter(T),
-  Decimeter(T),
-  Centimeter(T),
-  Millimeter(T)
+#[deriving(Show, PartialEq, PartialOrd)]
+enum Distances {
+  Millimeter  = 1,
+  Centimeter  = 1000,
+  Decimeter   = 10000,
+  Meter       = 100000,
+  Kilometer   = 100000000
 }
 
+#[experimental]
+pub struct DistanceStruct<T> {
+  _ty: Distances,
+  _val: T
+}
+
+impl <T> DistanceStruct<T> {
+  #[inline]
+  fn new(kind: Distances, val: T) -> DistanceStruct<T> {
+    DistanceStruct{_ty: kind, _val: val}
+  }
+}
+
+macro_rules! impl_distance_for_primitives(($($T:ty),+) => ($(
+impl Distance<$T> for $T {
+  #[inline]
+  fn mm(self) -> DistanceStruct<$T> {
+    DistanceStruct::new(Millimeter, self)
+  }
+  #[inline]
+  fn cm(self) -> DistanceStruct<$T> {
+    DistanceStruct::new(Centimeter, self)
+  }
+  #[inline]
+  fn dm(self) -> DistanceStruct<$T> {
+    DistanceStruct::new(Decimeter, self)
+  }
+  #[inline]
+  fn m (self) -> DistanceStruct<$T> {
+    DistanceStruct::new(Meter, self)
+  }
+  #[inline]
+  fn km(self) -> DistanceStruct<$T> {
+    DistanceStruct::new(Kilometer, self)
+  }
+}
+
+impl Distance<$T> for DistanceStruct<$T> {
+  #[inline]
+  fn mm(self) -> DistanceStruct<$T> {
+    DistanceStruct::new(Millimeter, self.val())
+  }
+  #[inline]
+  fn cm(self) -> DistanceStruct<$T> {
+    DistanceStruct::new(Centimeter, self.val())
+  }
+  #[inline]
+  fn dm(self) -> DistanceStruct<$T> {
+    DistanceStruct::new(Decimeter, self.val())
+  }
+  #[inline]
+  fn m (self) -> DistanceStruct<$T> {
+    DistanceStruct::new(Meter, self.val())
+  }
+  #[inline]
+  fn km(self) -> DistanceStruct<$T> {
+    DistanceStruct::new(Kilometer, self.val())
+  }
+}
+
+impl ToPrimitive for DistanceStruct<$T> {
+  #[inline]
+  fn to_i64(&self) -> Option<i64> {
+    NumCast::from(self.val())
+  }
+  #[inline]
+  fn to_u64(&self) -> Option<u64> {
+    NumCast::from(self.val())
+  }
+}
+
+impl HasValue<$T> for DistanceStruct<$T> {
+  #[inline]
+  fn val(self) -> $T {
+    self._val
+  }
+}
+
+)+)) for_primitives!(impl_distance_for_primitives)
+
+/*
 macro_rules! distance_overload_operator(
   ($op:ident, $_self:ident, $other:ident) => (
     match *$_self {
@@ -107,3 +188,4 @@ macro_rules! impl_distance_for_primitives(
 )
 
 for_types!(impl_distance_for_primitives)
+*/

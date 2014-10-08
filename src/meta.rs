@@ -2,15 +2,16 @@
 
 #[stable]
 pub trait HasValue<T> {
-  fn val(&self) -> T;
+  fn val(self) -> T;
 }
 
 macro_rules! impl_has_value_for_primitives(
   ($($t:ty),+) => (
     $(
       impl HasValue<$t> for $t {
-        fn val(&self) -> $t {
-          *self
+        #[inline(always)]
+        fn val(self) -> $t {
+          self
         }
       }
     )+
@@ -26,10 +27,10 @@ macro_rules! gen_unit_structs_with_args_derive(
   )
 )
 
-macro_rules! for_types(
+macro_rules! for_primitives(
   ($r:ident) => (
-    $r!(f64, f32, i64, i32, u64, u32, int, uint)
+    $r!(uint, u8, u16, u32, u64, int, i8, i16, i32, i64, f32, f64)
   )
 )
 
-for_types!(impl_has_value_for_primitives)
+for_primitives!(impl_has_value_for_primitives)

@@ -7,14 +7,14 @@
 //!
 
 pub use self::distances::*;
-pub use self::times::*;
+//pub use self::times::*;
 pub use self::meta::HasValue;
-pub use self::velocities::*;
+//pub use self::velocities::*;
 
 pub mod meta;
 pub mod distances;
-pub mod times;
-pub mod velocities;
+//pub mod times;
+//pub mod velocities;
 
 #[test]
 fn test_distance() {
