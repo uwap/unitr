@@ -45,6 +45,7 @@ impl Times {
   }
 }
 
+#[deriving(Clone)]
 pub struct TimeStruct<T> {
   _ty: Times,
   _val: T
@@ -155,9 +156,9 @@ impl Sub<TimeStruct<$T>, TimeStruct<$T>> for TimeStruct<$T> {
 //impl Mul<DistanceStruct<$T>, Surface<$T>>
 
 impl Show for TimeStruct<$T> {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}{}", self.val(), self.symbol())
-    }
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    write!(f, "{}{}", self.val(), self.symbol())
+  }
 }
 impl PartialEq for TimeStruct<$T> {
   fn eq(&self, other: &TimeStruct<$T>) -> bool {

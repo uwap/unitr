@@ -9,12 +9,12 @@
 pub use self::distances::*;
 pub use self::times::*;
 pub use self::meta::{HasValue, Unit};
-//pub use self::velocities::*;
+pub use self::velocities::*;
 
 pub mod meta;
 pub mod distances;
 pub mod times;
-//pub mod velocities;
+pub mod velocities;
 
 #[test]
 fn test_distance() {
@@ -40,7 +40,6 @@ fn test_time() {
   assert_eq!(1f32.s() + 100f32.ms(), 1.1f32.s())
 }
 
-/*
 #[test]
 fn test_velocity() {
   assert_eq!((10f64.m() / 2f64.s()).val(), 5f64)
@@ -49,4 +48,3 @@ fn test_velocity() {
   assert_eq!(100f64.m() / 2f64.s(), 50f64.m_s())
   assert!(100f64.m() / 1f64.s() != 50f64.m() / 1f64.s())
 }
-*/

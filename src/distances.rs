@@ -12,7 +12,7 @@ pub trait Distance<T> : HasValue<T> + Unit {
   fn km(self)  -> DistanceStruct<T>;
 }
 
-#[deriving(Show, PartialEq, PartialOrd)]
+#[deriving(Show, PartialEq, PartialOrd, Clone)]
 enum Distances {
   Millimeter  = 1,
   Centimeter  = 1000,
@@ -45,6 +45,7 @@ impl Distances {
 }
 
 #[experimental]
+#[deriving(Clone)]
 pub struct DistanceStruct<T> {
   _ty: Distances,
   _val: T
@@ -156,9 +157,9 @@ impl Sub<DistanceStruct<$T>, DistanceStruct<$T>> for DistanceStruct<$T> {
 //impl Mul<DistanceStruct<$T>, Surface<$T>>
 
 impl Show for DistanceStruct<$T> {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}{}", self.val(), self.symbol())
-    }
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    write!(f, "{}{}", self.val(), self.symbol())
+  }
 }
 impl PartialEq for DistanceStruct<$T> {
   fn eq(&self, other: &DistanceStruct<$T>) -> bool {

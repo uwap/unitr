@@ -1,11 +1,14 @@
-use meta::HasValue;
+use meta::{Unit, HasValue};
+use std::fmt;
+use std::fmt::Show;
 use times::*;
 use distances::*;
 
 // TODO: Implement add, sub and mul traits
+// TODO: Implement Unit for Velocity
 
-#[deriving(Show, Clone)]
-pub struct Velocity<T>(Distances<T>, Times<T>);
+#[deriving(Clone)]
+pub struct Velocity<T>(DistanceStruct<T>, TimeStruct<T>);
 
 macro_rules! for_velocities(
   ($r:ident) => (
@@ -34,17 +37,16 @@ macro_rules! generate_velocity_trait(
     }
   )
 )
-
 macro_rules! impl_trait_for_primitives_part(
   ($t:ty, $({$m:ident, $l:ident, $r:ident}),+) => (
     $(
+      #[inline]
       fn $m(&self) -> Velocity<$t> {
         Velocity(self.$l(), (1f64 as $t).$r())
       }
     )+
   )
 )
-
 macro_rules! impl_trait_for_primitives(
   ($($t:ty),+) => (
     $(
@@ -58,8 +60,9 @@ macro_rules! impl_trait_for_primitives(
 macro_rules! add_distance_division(
   ($($t:ty),+) => (
     $(
-      impl Div<Times<$t>, Velocity<$t>> for Distances<$t> {
-        fn div(&self, time: &Times<$t>) -> Velocity<$t> {
+      impl Div<TimeStruct<$t>, Velocity<$t>> for DistanceStruct<$t> {
+        #[inline]
+        fn div(&self, time: &TimeStruct<$t>) -> Velocity<$t> {
           Velocity(*self, *time)
         }
       }
@@ -70,6 +73,7 @@ macro_rules! add_distance_division(
 macro_rules! impl_velocity_trait_for_velocity_part(
   ($t:ty, $({$m:ident, $l:ident, $r:ident}),+) => (
     $(
+      #[inline]
       fn $m(&self) -> Velocity<$t> {
         match *self {
           Velocity(d, t) => Velocity(d.$l(), t.$r())
@@ -86,36 +90,30 @@ macro_rules! impl_velocity_trait_for_velocity(
         for_velocities!(impl_velocity_trait_for_velocity_part, $t)
       }
       impl HasValue<$t> for Velocity<$t> {
-        fn val(&self) -> $t {
-          match *self {
+        #[inline]
+        fn val(self) -> $t {
+          match self {
             Velocity(d, t) => d.val() / t.val()
           }
         }
       }
       impl PartialEq for Velocity<$t> {
+        #[inline]
         fn eq(&self, other: &Velocity<$t>) -> bool {
           self.val() == other.val()
         }
-        fn ne(&self, other: &Velocity<$t>) -> bool {
-          self.val() != other.val()
-        }
       }
       impl PartialOrd for Velocity<$t> {
+        #[inline]
         fn partial_cmp(&self, other: &Velocity<$t>) -> Option<Ordering> {
           (&self.val()).partial_cmp(&other.val())
         }
-
-        fn lt(&self, other: &Velocity<$t>) -> bool {
-          self.val() < other.val()
-        }
-        fn le(&self, other: &Velocity<$t>) -> bool {
-          self.val() <= other.val()
-        }
-        fn gt(&self, other: &Velocity<$t>) -> bool {
-          self.val() > other.val()
-        }
-        fn ge(&self, other: &Velocity<$t>) -> bool {
-          self.val() >= other.val()
+      }
+      impl Show for Velocity<$t> {
+        fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+          write!(f, "{}{}/{}", self.val(),
+            match *self { Velocity(ref d, _) => d.symbol() },
+            match *self { Velocity(_, ref t) => t.symbol() })
         }
       }
     )+
@@ -123,6 +121,6 @@ macro_rules! impl_velocity_trait_for_velocity(
 )
 
 for_velocities!(generate_velocity_trait)
-for_types!(impl_trait_for_primitives)
-for_types!(impl_velocity_trait_for_velocity)
-for_types!(add_distance_division)
+for_primitives!(impl_trait_for_primitives)
+for_primitives!(impl_velocity_trait_for_velocity)
+for_primitives!(add_distance_division)
