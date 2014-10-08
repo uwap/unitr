@@ -105,7 +105,14 @@ let A = a * b;
 assert_eq!(A, 8000.cm2())
 ```
 As well as non metric units are still missing, also `.a()` and `.ha()` aren't a thing yet.  
-Multiplying to distances of different units together won't work.
+```rust
+let a = 1.km();
+let b = 2000.m();
+let A = a*b;
+assert_eq!(A, 9.km2())
+```
+As you can see, when multiplying two different distance units together, the result's unit  
+will be the square of the left hand side unit.
 TODO
 ====
 Beside the previous named features we have a lot of things on our todo list.  
