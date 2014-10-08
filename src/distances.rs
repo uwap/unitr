@@ -1,4 +1,5 @@
 use meta::HasValue;
+use std::mem;
 
 #[unstable="Likely to change its name"]
 pub trait Distance<T> : HasValue<T> {
@@ -17,6 +18,18 @@ enum Distances {
   Meter       = 100000,
   Kilometer   = 100000000
 }
+impl <T> HasValue<T> for Distances where T: Primitive {
+  #[inline]
+  fn val(self) -> T {
+    NumCast::from::<i32>(unsafe { mem::transmute(self) }).unwrap()
+  }
+}
+impl Distances {
+  #[inline]
+  fn fac<T>(from: T, to: T) -> f32 where T: HasValue<f32> {
+    from.val() / to.val()
+  }
+}
 
 #[experimental]
 pub struct DistanceStruct<T> {
@@ -24,10 +37,16 @@ pub struct DistanceStruct<T> {
   _val: T
 }
 
-impl <T> DistanceStruct<T> {
+impl <T> DistanceStruct<T> where T: Primitive {
   #[inline]
   fn new(kind: Distances, val: T) -> DistanceStruct<T> {
     DistanceStruct{_ty: kind, _val: val}
+  }
+  fn convert<U>(self, to: Distances) -> DistanceStruct<U> where U: Primitive {
+    let self_val_f32 : f32 = NumCast::from(self._val).unwrap();
+    DistanceStruct::new(to,
+      NumCast::from::<f32>(
+        self_val_f32 * Distances::fac(self._ty, to)).unwrap())
   }
 }
 
@@ -58,23 +77,23 @@ impl Distance<$T> for $T {
 impl Distance<$T> for DistanceStruct<$T> {
   #[inline]
   fn mm(self) -> DistanceStruct<$T> {
-    DistanceStruct::new(Millimeter, self.val())
+    self.convert(Millimeter)
   }
   #[inline]
   fn cm(self) -> DistanceStruct<$T> {
-    DistanceStruct::new(Centimeter, self.val())
+    self.convert(Centimeter)
   }
   #[inline]
   fn dm(self) -> DistanceStruct<$T> {
-    DistanceStruct::new(Decimeter, self.val())
+    self.convert(Decimeter)
   }
   #[inline]
   fn m (self) -> DistanceStruct<$T> {
-    DistanceStruct::new(Meter, self.val())
+    self.convert(Meter)
   }
   #[inline]
   fn km(self) -> DistanceStruct<$T> {
-    DistanceStruct::new(Kilometer, self.val())
+    self.convert(Kilometer)
   }
 }
 
