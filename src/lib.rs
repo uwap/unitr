@@ -12,6 +12,7 @@ pub use self::meta::{HasValue, Unit};
 pub use self::times::*;
 pub use self::velocities::*;
 
+mod unitgenerator;
 pub mod meta;
 pub mod areas;
 pub mod distances;

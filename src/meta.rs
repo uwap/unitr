@@ -38,11 +38,26 @@ macro_rules! gen_unit_structs_with_args_derive(
 )
 
 macro_rules! for_primitives(
+  ($r:ident, $ri:ident, $p:tt) => (
+    $r!($p, $ri, uint, u8, u16, u32, u64, int, i8, i16, i32, i64, f32, f64)
+  );
   ($r:ident, $p:tt) => (
     $r!($p, uint, u8, u16, u32, u64, int, i8, i16, i32, i64, f32, f64)
   );
   ($r:ident) => (
     $r!(uint, u8, u16, u32, u64, int, i8, i16, i32, i64, f32, f64)
+  )
+)
+macro_rules! for_single_primitives(
+  ($r:ident, $p:tt) => (
+    for_primitives!(for_single_primitives_inner, $r, $p)
+  )
+)
+macro_rules! for_single_primitives_inner(
+  ($r:ident, $p:tt, $($t:ty),+) => (
+    $(
+      $r!($p, $t)
+    )+
   )
 )
 

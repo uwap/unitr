@@ -1,7 +1,7 @@
 UNITr
 =====
 1. [Getting Started](#getting-started)
-2. [A Qick Overview](#a-quick-overview)
+2. [A Quick Overview](#a-quick-overview)
 3. [Distance Types](#distance-types)
 4. [Time Types](#time-types)
 5. [Velocity Types](#velocity-types)
@@ -15,7 +15,12 @@ To start using this library, simply add the following 2 lines to your Cargo.toml
 [dependencies.unitr]
 git = "https://github.com/uwap/unitr.git"
 ```
-And add `extern crate unitr;` in your main.rs / lib.rs.
+And add the following to your main.rs / lib.rs:
+```rust
+#![feature(globs)]
+extern crate unitr;
+use unitr::*;
+```
 A Quick Overview
 ================
 UNITr is a library for rust designed for people having to use units a lot.  
@@ -85,11 +90,11 @@ These are made of a distance and a time unit. For example:
 * Meters per Second are accessible by `.m_s()`
 * Kilometers per Hour are accessible by `.km_h()`
 * Millimeters per Millisecond are accessible by `.mm_ms()`
-* Centimeters per Hour are accessible by `.cm_min()`
+* Centimeters per Minute are accessible by `.cm_min()`
 
 You can make up any combination you want.  
 The conversation is done in the pattern of `.{distance}_{time}()`, `.m_s()` for example.  
-__Note: Instead of using `.minute()` as for the times, velocities use `.min()`__
+__Note: Instead of using `.minute()` as for the times, velocities use `.{distance}_min()`__
 Area Types
 ==========
 Area types can be accessed on two ways. The usual method:
